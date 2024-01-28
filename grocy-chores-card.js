@@ -463,32 +463,46 @@ class GrocyChoresCard extends LitElement {
         }
     }
 
+    _formatTime(dateTime) {
+    const hours = dateTime.hour;
+    const minutes = dateTime.minute;
+    const amPm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12; // Convert 24-hour time to 12-hour time
+
+    // If minutes are "00", don't display them
+    return minutes === 0 ? `${formattedHours} ${amPm}` : `${formattedHours}:${minutes.toString().padStart(2, '0')} ${amPm}`;
+}
+
     _formatDueDate(dueDate, dueInDays) {
-        if (dueInDays < 0) {
-            return this._translate("Overdue");
-        } else if (dueInDays < 1) {
-            return this._translate("Today");
-        } else if (dueInDays < 2) {
-            return this._translate("Tomorrow");
-        } else if (dueInDays < this.due_in_days_threshold) {
-            return this._translate("In {number} days", dueInDays);
-        } else {
-            return this._formatDate(dueDate, true);
-        }
+    const formattedTime = this._formatTime(dueDate);
+
+    if (dueInDays < 0) {
+        return `${this._translate("Overdue")} at ${formattedTime}`;
+    } else if (dueInDays < 1) {
+        return `${this._translate("Today")} at ${formattedTime}`;
+    } else if (dueInDays < 2) {
+        return `${this._translate("Tomorrow")} at ${formattedTime}`;
+    } else if (dueInDays < this.due_in_days_threshold) {
+        return this._translate("In {number} days", dueInDays);
+    } else {
+        return this._formatDate(dueDate, false);
     }
+}
 
     _formatLastTrackedDate(lastTrackedDate, lastTrackedDays, dateOnly) {
-        if (lastTrackedDays < 1) {
-            return this._translate("Today");
-        } else if (lastTrackedDays < 2) {
-            return this._translate("Yesterday");
-        } else if (lastTrackedDays < this.last_tracked_days_threshold) {
-            return this._translate("{number} days ago", lastTrackedDays);
-        } else {
-            return this._formatDate(lastTrackedDate, dateOnly);
-        }
-    }
+    const formattedTime = this._formatTime(lastTrackedDate);
 
+    if (lastTrackedDays < 1) {
+        return `${this._translate("Today")} at ${formattedTime}`;
+    } else if (lastTrackedDays < 2) {
+        return `${this._translate("Yesterday")} at ${formattedTime}`;
+    } else if (lastTrackedDays < this.last_tracked_days_threshold) {
+        return this._translate("{number} days ago", lastTrackedDays);
+    } else {
+        return this._formatDate(lastTrackedDate, false);
+    }
+}
+    
     _translate(string, number) {
         let newString = string;
         if ((this.config.custom_translation != null) && (this.config.custom_translation[string] != null)) {
