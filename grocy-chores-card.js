@@ -497,7 +497,7 @@ class GrocyChoresCard extends LitElement {
     } else if (lastTrackedDays < 2) {
         return `${this._translate("Yesterday")} at ${formattedTime}`;
     } else if (lastTrackedDays < this.last_tracked_days_threshold) {
-        return this._translate("{number} days ago", lastTrackedDays);
+        return `${this._translate("{number} days ago", lastTrackedDays)} at ${formattedTime}`;
     } else {
         return this._formatDate(lastTrackedDate, false);
     }
