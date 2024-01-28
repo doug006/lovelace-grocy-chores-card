@@ -1,4 +1,4 @@
-// import {html, LitElement, nothing} from "lit";
+import {html, LitElement, nothing} from "lit";
 import {DateTime} from "luxon";
 import style from './style.js';
 
